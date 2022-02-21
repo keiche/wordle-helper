@@ -32,16 +32,15 @@ $ python3 wordle-helper.py
 Guessed word (word 1): outer
 Yellow positions (word 1): 3
 Green positions (word 1): 
-128 words remain
+98 words remain
 
 Add another word (y/n)? y
 Guessed word (word 2): banks
 Yellow positions (word 2): 
 Green positions (word 2): 2
-18 words remain
+7 words remain
 
 Add another word (y/n)? n
-Final set size: 18 words
-cacti catch catty faith fatal fatty hatch latch match patch
-patty tacit taffy tally tatty waltz watch yacht
+Final set size: 7 words
+cacti faith tacit taffy tally waltz yacht
 ```

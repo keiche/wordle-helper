@@ -34,13 +34,13 @@ class Wordle:
 
         # Remove answers without yellow letters
         for yp in yellow_pos:
-            self._remove_yellow(guess[int(yp) - 1])
+            self._remove_yellow(guess[int(yp) - 1], int(yp))
 
         # Status
         print(f'{len(self.words)} words remain\n')
 
-    def _remove_yellow(self, letter: str) -> None:
-        self.words = [word for word in self.words if letter in word]
+    def _remove_yellow(self, letter: str, pos: int) -> None:
+        self.words = [word for word in self.words if letter in word and word[pos-1] != letter]
 
     def _remove_green(self, letter: str, pos: int) -> None:
         self.words = [word for word in self.words if word[pos-1] == letter]
