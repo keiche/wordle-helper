@@ -2,7 +2,6 @@
 """ Determine remaining set of Wordle answers after guesses """
 
 import click
-from distutils.util import strtobool
 
 
 class Wordle:
@@ -17,7 +16,7 @@ class Wordle:
                 words.append(line.rstrip())
         return words
 
-    def update_words(self, guess: str, yellow_pos: str, green_pos: str) -> None:
+    def update_words(self, guess: str, yellow_pos: str, green_pos: str) -> int:
         # Remove words with gray letters
         yellow = [guess[int(pos)-1] for pos in yellow_pos]
         green = [guess[int(pos)-1] for pos in green_pos]
@@ -36,8 +35,8 @@ class Wordle:
         for yp in yellow_pos:
             self._remove_yellow(guess[int(yp) - 1], int(yp))
 
-        # Status
-        print(f'{len(self.words)} words remain\n')
+        # Return remaining possible answers
+        return len(self.words)
 
     def _remove_yellow(self, letter: str, pos: int) -> None:
         self.words = [word for word in self.words if letter in word and word[pos-1] != letter]
@@ -62,29 +61,36 @@ class Wordle:
 @click.command()
 @click.option('-f', '--filename', type=str, default='word_list.txt', help='File path to possible word answers')
 @click.option('-b', '--batch', type=int, default=10, help='Number of possible answers per output row')
-def main(filename, batch):
+@click.option('-q', '--quiet', is_flag=True, help='Suppress the final word list')
+def main(filename, batch, quiet):
     """Show remaining wordle possibilities"""
     w = Wordle(filename)
 
+    word_count = []
     c = 1
     while c <= 6:
-        keep_going = strtobool(input('Add another word (y/n)? ')) if c != 1 else True
-        if not keep_going:
-            break
-
         # Gather guess data
-        guess = input(f'Guessed word (word {c}): ').lower()
+        guess = input(f'Guessed word (word {c}) (empty to stop): ').lower()
+        if not guess:
+            break
         yellow = input(f'Yellow positions (word {c}): ').lower()
         green = input(f'Green positions (word {c}): ').lower()
 
         # Update possibilities
-        w.update_words(guess, yellow, green)
+        word_count.append(w.update_words(guess, yellow, green))
 
         # Iterate word
         c += 1
 
-    # Print results
-    w.print_words(batch)
+    # Print choices after each guess
+    for i, c in enumerate(word_count):
+        if i == 0:
+            print('')
+        print(f'Possible answers after guess {i+1}: {c}')
+
+    # Print remaining possible answers
+    if not quiet:
+        w.print_words(batch)
 
 
 if __name__ == '__main__':
